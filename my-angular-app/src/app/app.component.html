@@ -1,0 +1,12 @@
+<span>{{ title }} app is running!</span>
+<!--<app-hello></app-hello>-->
+<!-- <app-home></app-home> -->
+<br>
+<a [routerLink]="['/home']" routerLinkActive="router-link-active" >首頁</a>
+<br>
+<a [routerLink]="['/hello','yvonne','2']" [queryParams]="{id:1,name:'yvonne'}" routerLinkActive="router-link-active" >hello</a>
+<br>
+<a [routerLink]="['/list']" routerLinkActive="router-link-active" >列表</a>
+
+<!-- 路由組件渲染的位置 -->
+<router-outlet></router-outlet>

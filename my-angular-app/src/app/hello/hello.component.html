@@ -1,0 +1,172 @@
+<!--{{}}可以簡單理解為一段js執行區域 只不過語法有限制-->
+<p>{{name + ',妳好啊'}}</p>
+<p>{{1 + 1}}</p>
+<p>{{true ? 1 + 1 : name}}</p>
+<p>{{false ? 1 + 1 : name}}</p>
+<p>{{date}}</p>
+
+<!--屬性綁定的使用的語法是[屬姓名]-->
+<div [id]="'box'">屬性綁定</div>
+<div [id]="box">屬性綁定</div>
+
+<!--class使用方式-->
+<p [class]="'item'">class綁定</p>
+<p [class]="itemClass">class綁定</p>
+
+<h3 [class.h3-dom]="true">hello{{1 + 1}}</h3>
+<h3 [class]="h3Class">多類名綁定</h3>
+
+<h3 [class]="{'h3-dom': false, 'title-dom': true}">類名條件渲染</h3>
+
+<h3 [class]="['h3-dom', 'title-dom']">class數組渲染</h3>
+
+<h3 [ngClass]="{'active': isActive}">ngClass綁定</h3>
+
+<!--樣式綁定-->
+<h3 [style.width]="'300px'">單一樣式綁定</h3>
+<h3 [style.color]="'red'">單一樣式綁定</h3>
+<h3 [style.width.px]="300">單一樣式綁定</h3>
+
+<h3 [style]="'background:red;color:#fff'">多樣式綁定</h3>
+<h3 [style]="{'background': 'red', 'color': '#fff'}">多樣式綁定</h3>
+
+<h3 [ngStyle]="{'color': 'red'}">ngStyle樣式綁定</h3>
+<h3 [ngStyle]="{'font-size': isMax ? '24px' : '12px'}">ngStyle樣式綁定</h3>
+<h3 [ngStyle]="{'font-size': !isMax ? '24px' : '12px'}">ngStyle樣式綁定</h3>
+
+<!--條件判斷語法-->
+<div *ngIf="isMax">isMax==true</div>
+<div *ngIf="!isMax">isMax==false</div>
+
+<!--解析完-->
+<ng-template [ngIf]="isMax">
+    <div>isMax==true</div>
+</ng-template>
+<hr>
+<ng-container *ngIf="isMax; else elseTemplate">
+    <div>isMax==true</div>
+</ng-container>
+<ng-template #elseTemplate>
+    <div>isMax==false</div>
+</ng-template>
+
+<hr>
+<!--循環語句-->
+<!--for循環語句-->
+<div *ngFor="let item of colors; let i = index; let isOdd = odd">
+    {{ isOdd }}
+    {{ i }}
+    {{ item }}
+</div>
+<hr>
+<ng-template ngFor let-color [ngForOf]="colors" let-i="index" let-odd="odd">
+    <div>{{ odd }} {{ i }} {{ color }}</div>
+</ng-template>
+
+<!--switch循環語句-->
+<div [ngSwitch]="type">
+    <p *ngSwitchCase="1">
+        type:1
+    </p>
+    <p *ngSwitchCase="2">
+        type:2
+    </p>
+    <p *ngSwitchDefault>
+        type != 1 && type != 2
+    </p>
+</div>
+<hr>
+<!--事件綁定  (事件類型) = "事件執行函數"-->
+<input type="text" (input)="inpCharge($event)" name="" id="">
+<button (click)="clickFun($event)">點擊</button>
+
+<hr>
+<!--模板引用變量-->
+<div #box>
+    <input #userName type="text" name="" id="">
+    <button></button>
+</div>
+
+<button (click)="getUserName(userName.value)">點擊userName</button>
+
+<hr>
+<!--雙向綁定-->
+<input [(ngModel)]="title" type="text">
+<p>標題:{{title}}</p>
+
+<hr>
+<!--動態表單控件-->
+年齡: <input type="text" [formControl]="age">
+<br>
+<p>年齡:{{age.value}}</p>
+<button (click)="ageChangeFun()">長大</button>
+
+<hr>
+<!--表單控件分組-->
+<form [formGroup]="loginForm">
+    <label>
+        帳號:
+        <input type="text" formControlName="userName">
+    </label>
+    <label>
+        密碼:
+        <input type="text" formControlName="password">
+    </label>
+    <button (click)="subFormFun()">提交</button>
+</form>
+
+<hr>
+<!--表單驗證-->
+<form action="">
+    帳號:
+    <input required #nameInp="ngModel" type="text" [(ngModel)]="fromData.name" name="userName">
+    <br>
+    <!--驗證是否通過-->
+    <!--<span>驗證結果:{{nameInp.valid}}</span>-->
+    <span *ngIf="nameInp.invalid && (nameInp.dirty || nameInp.touched)">請輸入帳號</span>
+    <hr>
+    <br>
+    密碼:
+    <input required #pasInp="ngModel" type="text" [(ngModel)]="fromData.password" name="password">
+    <br>
+    <span>驗證結果:{{pasInp.valid}}</span>
+    <hr>
+    <button (click)="subBtnFun(nameInp)">提交</button>
+</form>
+
+<hr>
+<!--自訂義表單驗證-->
+<form [formGroup]="vailDataForm">
+    <label>
+        帳號:
+        <input type="text" formControlName="userName">
+    </label>
+    <p *ngIf="vailDataForm.get('userName')?.errors?.required">請輸入帳號</p>
+    <p *ngIf="vailDataForm.get('userName')?.errors?.minlength">帳號長度在6-18位之間</p>
+    <br>
+    <label>
+        密碼:
+        <input type="text" formControlName="password">
+    </label>
+    <ng-container *ngIf="vailDataForm.get('password')?.errors?.required; else elseerrorsTemplate">
+        <p>請輸入密碼</p>
+    </ng-container>
+    <ng-template #elseerrorsTemplate>
+        <p *ngIf="vailDataForm.get('password')?.errors?.msg">{{vailDataForm.get('password')?.errors?.msg}}</p>
+    </ng-template>
+    <br>
+    <label>
+        手機號:
+        <input type="text" formControlName="phone">
+    </label>
+    <p *ngIf="vailDataForm.get('phone')?.errors?.msg">{{vailDataForm.get('phone')?.errors?.msg}}</p>
+    <br>
+    <button (click)="subvailDataFormFormFun()">提交</button>
+</form>
+
+<hr>
+<!--Angular管道-->
+{{dateStr}}
+<p>{{dateStr | date :'yyyy-MM-dd HH:mm:ss'}}</p>
+<p>{{name | uppercase | lowercase}}</p>
+<p>{{name | test}}</p>
